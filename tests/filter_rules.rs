@@ -29,7 +29,7 @@ fn after_each() {
 test!(drop_all_rule {
     let mut pf = pfctl::PfCtl::new().unwrap();
     let rule = pfctl::FilterRuleBuilder::default()
-        .action(pfctl::FilterRuleAction::Drop)
+        .action(pfctl::FilterRuleAction::Drop(pfctl::DropAction::Drop))
         .build()
         .unwrap();
     assert_matches!(pf.add_rule(ANCHOR_NAME, &rule), Ok(()));
@@ -42,10 +42,7 @@ test!(drop_all_rule {
 test!(return_all_rule {
     let mut pf = pfctl::PfCtl::new().unwrap();
     let rule = pfctl::FilterRuleBuilder::default()
-        .action(pfctl::FilterRuleAction::Drop)
-        .rule_flag(pfctl::RuleFlagSet::new(&[
-            pfctl::RuleFlag::Return,
-        ]))
+        .action(pfctl::FilterRuleAction::Drop(pfctl::DropAction::Return))
         .build()
         .unwrap();
     assert_matches!(pf.add_rule(ANCHOR_NAME, &rule), Ok(()));
@@ -58,7 +55,7 @@ test!(return_all_rule {
 test!(drop_by_direction_rule {
     let mut pf = pfctl::PfCtl::new().unwrap();
     let rule = pfctl::FilterRuleBuilder::default()
-        .action(pfctl::FilterRuleAction::Drop)
+        .action(pfctl::FilterRuleAction::Drop(pfctl::DropAction::Drop))
         .direction(pfctl::Direction::Out)
         .build()
         .unwrap();
@@ -72,7 +69,7 @@ test!(drop_by_direction_rule {
 test!(drop_quick_rule {
     let mut pf = pfctl::PfCtl::new().unwrap();
     let rule = pfctl::FilterRuleBuilder::default()
-        .action(pfctl::FilterRuleAction::Drop)
+        .action(pfctl::FilterRuleAction::Drop(pfctl::DropAction::Drop))
         .quick(true)
         .build()
         .unwrap();
@@ -86,7 +83,7 @@ test!(drop_quick_rule {
 test!(drop_by_ip_rule {
     let mut pf = pfctl::PfCtl::new().unwrap();
     let rule = pfctl::FilterRuleBuilder::default()
-        .action(pfctl::FilterRuleAction::Drop)
+        .action(pfctl::FilterRuleAction::Drop(pfctl::DropAction::Drop))
         .proto(pfctl::Proto::Tcp)
         .from(Ipv4Addr::new(192, 168, 0, 1))
         .to(Ipv4Addr::new(127, 0, 0, 1))
@@ -102,7 +99,7 @@ test!(drop_by_ip_rule {
 test!(drop_by_port_rule {
     let mut pf = pfctl::PfCtl::new().unwrap();
     let rule = pfctl::FilterRuleBuilder::default()
-        .action(pfctl::FilterRuleAction::Drop)
+        .action(pfctl::FilterRuleAction::Drop(pfctl::DropAction::Drop))
         .proto(pfctl::Proto::Tcp)
         .from(pfctl::Port::One(3000, pfctl::PortUnaryModifier::Equal))
         .to(pfctl::Port::One(8080, pfctl::PortUnaryModifier::Equal))
@@ -118,7 +115,7 @@ test!(drop_by_port_rule {
 test!(drop_by_port_range_rule {
     let mut pf = pfctl::PfCtl::new().unwrap();
     let rule = pfctl::FilterRuleBuilder::default()
-        .action(pfctl::FilterRuleAction::Drop)
+        .action(pfctl::FilterRuleAction::Drop(pfctl::DropAction::Drop))
         .proto(pfctl::Proto::Tcp)
         .from(pfctl::Port::Range(3000, 4000, pfctl::PortRangeModifier::Inclusive))
         .to(pfctl::Port::Range(5000, 6000, pfctl::PortRangeModifier::Exclusive))
@@ -134,7 +131,7 @@ test!(drop_by_port_range_rule {
 test!(drop_by_interface_rule {
     let mut pf = pfctl::PfCtl::new().unwrap();
     let rule = pfctl::FilterRuleBuilder::default()
-        .action(pfctl::FilterRuleAction::Drop)
+        .action(pfctl::FilterRuleAction::Drop(pfctl::DropAction::Drop))
         .interface("utun0")
         .build()
         .unwrap();
@@ -227,7 +224,7 @@ test!(pass_in_dup_to_rule {
 test!(flush_filter_rules {
     let mut pf = pfctl::PfCtl::new().unwrap();
     let rule = pfctl::FilterRuleBuilder::default()
-        .action(pfctl::FilterRuleAction::Drop)
+        .action(pfctl::FilterRuleAction::Drop(pfctl::DropAction::Drop))
         .build()
         .unwrap();
     assert_matches!(pf.add_rule(ANCHOR_NAME, &rule), Ok(()));
@@ -293,7 +290,7 @@ test!(all_state_policies {
 test!(logging {
     let mut pf = pfctl::PfCtl::new().unwrap();
     let rule = pfctl::FilterRuleBuilder::default()
-        .action(pfctl::FilterRuleAction::Drop)
+        .action(pfctl::FilterRuleAction::Drop(pfctl::DropAction::Drop))
         .log(pfctl::RuleLogSet::new(&[
             pfctl::RuleLog::ExcludeMatchingState,
             pfctl::RuleLog::IncludeMatchingState,
